@@ -110,6 +110,13 @@
             <option value="splash">溅射伤害</option>
         </SELECT>
     </LABEL>
+    <label>你主要是在线还是离线?
+        <select id="active" onchange="adjustWeights();">
+            <option value="-1">- 请选择 -</option>
+            <option value="online">在线</option>
+            <option value="offline">离线</option>
+        </select>
+    </label>
     <H3>你的神器状态</H3>
     <P>填写你当前神器的等级. 如果你想忽略某个神器或者没有拥有这件神器的话,将它等级设置为0即可，并且我会在你需要开新神器的时候提醒你</P>
     <button onclick="checkAll();">全选</button>
@@ -147,10 +154,10 @@
     <script src="res/jquery-3.2.1.slim.min.js"></script>
     <script src="res/popper.min.js"></script>
     <script src="res/bootstrap.min.js"></script>
-    <script src="res/data.js"></script>
+    <script src="https://tt2-artifacts.herokuapp.com/js/data.js"></script>
     <script src="res/data-zhCN.js"></script>    
-    <script src="res/weights.js"></script>
-    <script src="res/app.js"></script>
+    <script src="https://tt2-artifacts.herokuapp.com/js/weights.js"></script>
+    <script src="https://tt2-artifacts.herokuapp.com/js/app.js"></script>
 
 
 </body>
