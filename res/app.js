@@ -4,12 +4,12 @@ function generateArtifacts() {
         if (isNaN(v.level)) {
             v.level = 0;
         }
-        if (artifacts_zhCN[k] != null) {
-            v.name = artifacts_zhCN[k].name;
-            v.bonus = artifacts_zhCN[k].bonus;
-        }else{
-            console.log(k)
-        }
+        // if (artifacts_zhCN[k] != null) {
+        //     v.name = artifacts_zhCN[k].name;
+        //     v.bonus = artifacts_zhCN[k].bonus;
+        // }else{
+        //     console.log(k)
+        // }
         div = '<div class="artifact' + (v.active == 1 ? '' : ' ignore') + '" id="' + k + 'div">' +
             '<input type="checkbox" id="' + k + 'active"' + (v.active == 1 ? ' checked="checked"' : '') + ' onchange="updateActive(\'' + k + '\');" /> ' +
             '<label><input  id="' + k + '" value="' + v.level + '" type="tel" onchange="updateArtifacts()" />' + v.name + '</label><br />' +
