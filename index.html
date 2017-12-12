@@ -1,8 +1,159 @@
+<!DOCTYPE html>
+<!-- saved from url=(0036)https://tt2-artifacts.herokuapp.com/ -->
 <html>
-    <head>
-        <title></title>
-    </head>
-    <body>
-        啊啊啊
-    </body>
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- Required meta tags -->
+
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="res/bootstrap.min.css">
+    <link rel="stylesheet" href="res/app.css">
+    <style></style>
+</head>
+
+<body>
+    <h1>点杀泰坦2 神器升级计算器</h1>
+    <h2>游戏版本： 2.4.1</h2>    
+    <P>这个工具是用来帮助您更好的使用圣物来升级您的神器。如果你发现了任何错误或有任何建议，可以在reddit网站上找到我，你可以联系我。</P>
+    <H3>你的重点方向是什么?</H3>
+    <P>回答下列问题,以提高不同神器的权重。 请注意，即使您的所有宠物都是100％，请选择最适合您的宠物。.</P>
+    <LABEL>你的主要技能树是哪一个?
+        <SELECT id="tree" onchange="adjustWeights();">
+            <option value="-1" selected="selected">- 请选择 -</option>
+            <option value="knight">骑士</option>
+            <option value="warlord">战神</option>
+            <option value="sorcerer">术士</option>
+            <option value="rogue">盗贼</option>
+        </SELECT>
+    </LABEL>
+    <LABEL>你主要的英雄是什么类型?
+        <SELECT id="hero" onchange="adjustWeights();">
+            <option value="-1" selected="selected">- 请选择 -</option>
+            <option value="melee">近战</option>
+            <option value="ranged">远程</option>
+            <option value="spell">法术</option>
+        </SELECT>
+    </LABEL>
+    <label>你主要的英雄是地面还是飞行?
+        <select id="hero2" onchange="adjustWeights();">
+            <option value="-1">- 请选择 -</option>
+            <option value="ground">地面</option>
+            <option value="flying">飞行</option>
+        </select>
+    </label>
+    <LABEL>哪个技能对你来说最重要?
+        <SELECT id="spell" onchange="adjustWeights();">
+            <option value="-1">- 请选择 -</option>
+            <option value="hs">天堂圣击</option>
+            <option value="ds">致命打击</option>
+            <option value="hom">米达斯之手</option>
+            <option value="fs">火焰之剑</option>
+            <option value="wc">战嚎</option>
+            <option value="sc">影分身术</option>
+        </SELECT>
+    </LABEL>
+    <LABEL>你使用哪种武器?
+        <SELECT id="sword" onchange="adjustWeights();">
+            <option value="-1">- 请选择 -</option>
+            <option value="all">所有攻击力</option>
+            <option value="hero">所有英雄伤害</option>
+            <option value="crit">暴击伤害</option>
+        </SELECT>
+    </LABEL>
+    <LABEL>你装备的哪种头盔?
+        <SELECT id="helmet" onchange="adjustWeights();">
+            <option value="-1">- 请选择 -</option>
+            <option value="melee">近战英雄伤害</option>
+            <option value="ranged">远程英雄伤害</option>
+            <option value="spell">法术英雄伤害</option>
+            <option value="tap">剑术攻击伤害</option>
+        </SELECT>
+    </LABEL>
+    <LABEL>你穿的哪种衣服?
+        <SELECT id="chest" onchange="adjustWeights();">
+            <option value="-1">- 请选择 -</option>
+            <option value="all">所有黄金</option>
+            <option value="boss">头目黄金</option>
+            <option value="chest">宝箱兽黄金</option>
+        </SELECT>
+    </LABEL>
+    <LABEL>你使用的什么光环?
+        <SELECT id="aura" onchange="adjustWeights();">
+            <option value="-1">- 请选择 -</option>
+            <option value="multi">多重重生几率</option>
+            <option value="chest">宝箱兽几率</option>
+            <option value="crit">暴击几率</option>
+        </SELECT>
+    </LABEL>
+    <LABEL>你使用的哪种劈砍?
+        <SELECT id="slash" onchange="adjustWeights();">
+            <option value="-1">- 请选择 -</option>
+            <option value="pet">宠物伤害</option>
+            <option value="clan">部落大船伤害</option>
+            <option value="sc">影分身伤害</option>
+        </SELECT>
+    </LABEL>
+    <LABEL>你带的什么宠物?
+        <SELECT id="pet" onchange="adjustWeights();">
+            <OPTION value="-1">- 请选择 -</OPTION>
+            <option value="all">所有攻击力</option>
+            <option value="hero">所有英雄伤害</option>
+            <option value="melee">近战英雄伤害</option>
+            <option value="ranged">远程英雄伤害</option>
+            <option value="spell">法术英雄伤害</option>
+            <option value="tap">点击伤害</option>
+            <option value="gold">所有黄金</option>
+            <option value="mana">法力回复</option>
+            <option value="splash">溅射伤害</option>
+        </SELECT>
+    </LABEL>
+    <H3>你的神器状态</H3>
+    <P>填写你当前神器的等级. 如果你想忽略某个神器或者没有拥有这件神器的话,将它等级设置为0即可，并且我会在你需要开新神器的时候提醒你</P>
+    <button onclick="checkAll();">全选</button>
+    <div id="artifacts"></div>
+    <H3>你现在可用的圣物</H3>
+    <P>请输入你想用来升级神器锁消耗的圣物数量.（后边选项为单位）</P>
+    <input id="relics" type="tel">.
+    <input id="relics_decimal" type="tel">
+    <select id="relic_factor">
+        <option value="_"> </option>
+        <option value="K">K</option>
+        <option value="M">M</option>
+        <option value="B">B</option>
+        <option value="T">T</option>
+    </select>
+    <input type="submit" value="生成结果" onclick="generateUpgrades()" ;="">
+    <br> 优先升
+    <input id="forcebos" type="tel" value="0"> 级
+    <font style="color:red;">暗影之书</font>
+    <H3>升级建议</H3>
+    <P>如果你升级了全部, 点击完成按钮来更新神器状态表并清除结果</P>
+    <p id="new_artifact">&nbsp;</p>
+    <ul id="suggestions"></ul>
+    <div id="accept"></div>
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async="" src="https://www.googletagmanager.com/gtag/js?id=UA-77025911-2"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'UA-77025911-2');
+    </script>
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="res/jquery-3.2.1.slim.min.js"></script>
+    <script src="res/popper.min.js"></script>
+    <script src="res/bootstrap.min.js"></script>
+    <script src="res/data.js"></script>
+    <script src="res/data-zhCN.js"></script>    
+    <script src="res/weights.js"></script>
+    <script src="res/app.js"></script>
+
+
+</body>
+<div style="display: block; opacity: 1;"></div>
+
 </html>
