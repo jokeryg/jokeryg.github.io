@@ -4,15 +4,15 @@ function generateArtifacts() {
         if (isNaN(v.level)) {
             v.level = 0;
         }
-        // if (artifacts_zhCN[k] != null) {
-        //     v.name = artifacts_zhCN[k].name;
-        //     v.bonus = artifacts_zhCN[k].bonus;
-        // }else{
-        //     console.log(k)
-        // }
+        if (artifacts_zhCN[k] != null) {
+            v.name = artifacts_zhCN[k].name;
+            v.bonus = artifacts_zhCN[k].bonus;
+        }else{
+            console.log(k)
+        }
         div = '<div class="artifact' + (v.active == 1 ? '' : ' ignore') + '" id="' + k + 'div">' +
             '<input type="checkbox" id="' + k + 'active"' + (v.active == 1 ? ' checked="checked"' : '') + ' onchange="updateActive(\'' + k + '\');" /> ' +
-            '<label><input  id="' + k + '" value="' + v.level + '" type="tel" onchange="updateArtifacts()" />' + v.name + '</label><br />' +
+            '<label><input id="' + k + '" value="' + v.level + '" type="tel" onchange="updateArtifacts()" />' + v.name + '</label><br />' +
             '<span id="' + k + 'effect">';
         if ('' != v.current_effect) {
             div += displayEffect(v.current_effect, v.type) + v.bonus;
@@ -45,6 +45,7 @@ function generateArtifacts() {
     window.localStorage.setItem('aura', $('#aura').val());
     window.localStorage.setItem('slash', $('#slash').val());
     window.localStorage.setItem('pet', $('#pet').val());
+    window.localStorage.setItem('active', $('#active').val());
     window.localStorage.setItem('relic_factor', $('#relic_factor').val());
     window.localStorage.setItem('forcebos', $('#forcebos').val());
     adjustWeights();
@@ -108,6 +109,7 @@ function regenerateArtifacts() {
     window.localStorage.setItem('aura', $('#aura').val());
     window.localStorage.setItem('slash', $('#slash').val());
     window.localStorage.setItem('pet', $('#pet').val());
+    window.localStorage.setItem('active', $('#active').val());
     window.localStorage.setItem('relic_factor', $('#relic_factor').val());
     window.localStorage.setItem('forcebos', $('#forcebos').val());
 }
@@ -154,7 +156,7 @@ function generateUpgrades() {
         new_artifact_litmus = true;
     } else {
         $.each(artifacts, function (k, v) {
-            if (v.level < 1 && v.active == 1 && v.rating >= 100) {
+            if (v.level < 1 && v.active == 1 && v.rating >= 50) {
                 new_artifact_litmus = true;
             }
         });
@@ -432,6 +434,7 @@ if (storageAvailable('localStorage')) {
     $('#aura').val(window.localStorage.getItem('aura'));
     $('#slash').val(window.localStorage.getItem('slash'));
     $('#pet').val(window.localStorage.getItem('pet'));
+    $('#active').val(window.localStorage.getItem('active'));
     $('#relic_factor').val(window.localStorage.getItem('relic_factor'));
     $('#forcebos').val(window.localStorage.getItem('forcebos'));
 }
