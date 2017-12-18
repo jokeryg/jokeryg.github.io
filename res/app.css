@@ -14,7 +14,7 @@ body.dark { background: #1e1e1e; color: #bbbbbb; }
 body.dark .artifact label { color: #bbbbbb; }
 body.dark .artifact.ignore { color: rgba(255, 255, 255, .2); }
 body.dark .artifact { border: solid 1px #646464; }
-body.dark input,body.dark select{
+body.dark input,body.dark select,body.dark button{
     background-color: #3c3c3c;
     color:#ccc;
     border:1px solid #111;
