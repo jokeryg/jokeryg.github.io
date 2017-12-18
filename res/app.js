@@ -1,3 +1,21 @@
+var i18n = {
+    "Artifact Damage":"神器伤害",
+    "Relics to Upgrade":"圣物升级",
+    "NOTE: You would be better off saving up for a new artifact.":"提醒: 您最好攒钱开个新神器.",
+    "You must have at least 1 artifact enabled to use this.":"您最少要拥有一件神器才能使用此计算器.",
+    "You cannot afford to make the next best upgrade. Please try again when you have more relics.":"你的圣物不足以生成下一个升级方案. 当你拥有更多的圣物时再尝试.",
+    "Complete":"完成"
+}
+function toggleDark() {
+    $('body').removeClass('dark');
+    if ($('#dark').prop('checked') == true) {
+        $('body').addClass('dark');
+        window.localStorage.setItem('dark', 1);
+    } else {
+        window.localStorage.setItem('dark', 0);
+    }
+}
+
 function generateArtifacts() {
     $('#artifacts').empty();
     $.each(artifacts, function (k, v) {
@@ -7,7 +25,7 @@ function generateArtifacts() {
         if (artifacts_zhCN[k] != null) {
             v.name = artifacts_zhCN[k].name;
             v.bonus = artifacts_zhCN[k].bonus;
-        }else{
+        } else {
             console.log(k)
         }
         div = '<div class="artifact' + (v.active == 1 ? '' : ' ignore') + '" id="' + k + 'div">' +
@@ -59,7 +77,6 @@ function updateActive(k) {
         artifacts[k].active = 0;
         $('#' + k + 'div').addClass('ignore');
     }
-    window.localStorage.setItem('artifacts', JSON.stringify(artifacts));
     calculate(artifacts, true);
 }
 
@@ -67,6 +84,7 @@ function checkAll() {
     $.each(artifacts, function (k, v) {
         $('#' + k + 'active').prop('checked', true);
         artifacts[k].active = 1;
+        $('#' + k + 'div').removeClass('ignore');
     });
     calculate(artifacts, true);
 }
@@ -437,6 +455,10 @@ if (storageAvailable('localStorage')) {
     $('#active').val(window.localStorage.getItem('active'));
     $('#relic_factor').val(window.localStorage.getItem('relic_factor'));
     $('#forcebos').val(window.localStorage.getItem('forcebos'));
+    if (window.localStorage.getItem('dark') == "1") {
+        $('#dark').prop('checked', true);
+    }
+    toggleDark();
 }
 
 origWeights = jQuery.extend(true, {}, artifacts);
