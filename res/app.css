@@ -10,7 +10,12 @@ span { font-size: 60%; display: block; }
 .light { color: #CCC; }
 .artifact.ignore { color: rgba(66, 66, 66, .2); }
 .artifact.ignore label { color: #CCC; }
-body.dark { background: black; color: white; }
-body.dark .artifact label { color: white; }
+body.dark { background: #1e1e1e; color: #bbbbbb; }
+body.dark .artifact label { color: #bbbbbb; }
 body.dark .artifact.ignore { color: rgba(255, 255, 255, .2); }
-body.dark .artifact { border: solid 1px white; }
+body.dark .artifact { border: solid 1px #646464; }
+body.dark input,body.dark select{
+    background-color: #3c3c3c;
+    color:#ccc;
+    border:1px solid #111;
+}
