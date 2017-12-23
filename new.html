@@ -17,23 +17,25 @@
 
 <body>
     <h1>点杀泰坦2 神器升级计算器</h1>
-    <h2>游戏版本： 2.4.2</h2>
+    <h2>游戏版本： 2.5.0</h2>
     <P>这个工具是用来帮助您更好的使用圣物来升级您的神器。如果你发现了任何错误或有任何建议，可以在reddit网站上找到我，你可以联系我。</P>
     <p style="font-size:13px;color:#666">PS:这个是采用原站最新的JS进行计算结果的，保持与原站一致的结果，但是汉化并不完全，如果<a href="index.html">完全汉化版</a>结果与最新版不一致时可暂时使用这个页面，等待完整汉化版的更新
         <span style="font-weight:bold;font-size:14px;">by 老爷你别这样</span>
     </p>
     <p><label><input type="checkbox" id="dark" onchange="toggleDark();"> 夜间模式</label></p>
-    <H3>你的重点方向是什么?</H3>
-    <P>回答下列问题,以提高不同神器的权重。 请注意，即使您的所有宠物都是100％，请选择最适合您的宠物。</P>
-    <LABEL>你的主要技能树是哪一个?
-        <SELECT id="tree" onchange="adjustWeights();">
-            <option value="-1" selected="selected">- 请选择 -</option>
-            <option value="knight">骑士</option>
-            <option value="warlord">战神</option>
-            <option value="sorcerer">术士</option>
-            <option value="rogue">盗贼</option>
-        </SELECT>
-    </LABEL>
+    <H3>你的玩法流派是什么样的?</H3>
+    <P>回答下列问题,以提高不同神器的权重。</P>
+    <label>你的主要Build?
+        <select id="build" onchange="adjustWeights();">
+            <option value="-1">- 请选择 -</option>
+            <option value="cs">部落大船</option>
+            <option value="hs">天堂圣击</option>
+            <option value="hero">英雄</option>
+            <option value="pet">宠物</option>
+            <option value="sc">影分身</option>
+            <option value="tap">点击</option>
+        </select>
+    </label>
     <LABEL>你主要的英雄是什么类型?
         <SELECT id="hero" onchange="adjustWeights();">
             <option value="-1" selected="selected">- 请选择 -</option>
@@ -49,70 +51,12 @@
             <option value="flying">飞行</option>
         </select>
     </label>
-    <LABEL>哪个技能对你来说最重要?
-        <SELECT id="spell" onchange="adjustWeights();">
-            <option value="-1">- 请选择 -</option>
-            <option value="hs">天堂圣击</option>
-            <option value="ds">致命打击</option>
-            <option value="hom">米达斯之手</option>
-            <option value="fs">火焰之剑</option>
-            <option value="wc">战嚎</option>
-            <option value="sc">影分身术</option>
-        </SELECT>
-    </LABEL>
-    <LABEL>你使用哪种武器?
-        <SELECT id="sword" onchange="adjustWeights();">
-            <option value="-1">- 请选择 -</option>
-            <option value="all">所有攻击力</option>
-            <option value="hero">所有英雄伤害</option>
-            <option value="crit">暴击伤害</option>
-        </SELECT>
-    </LABEL>
-    <LABEL>你装备的哪种头盔?
-        <SELECT id="helmet" onchange="adjustWeights();">
-            <option value="-1">- 请选择 -</option>
-            <option value="melee">近战英雄伤害</option>
-            <option value="ranged">远程英雄伤害</option>
-            <option value="spell">法术英雄伤害</option>
-            <option value="tap">剑术攻击伤害</option>
-        </SELECT>
-    </LABEL>
     <LABEL>你穿的哪种衣服?
         <SELECT id="chest" onchange="adjustWeights();">
             <option value="-1">- 请选择 -</option>
             <option value="all">所有黄金</option>
             <option value="boss">头目黄金</option>
             <option value="chest">宝箱兽黄金</option>
-        </SELECT>
-    </LABEL>
-    <LABEL>你使用的什么光环?
-        <SELECT id="aura" onchange="adjustWeights();">
-            <option value="-1">- 请选择 -</option>
-            <option value="multi">多重重生几率</option>
-            <option value="chest">宝箱兽几率</option>
-            <option value="crit">暴击几率</option>
-        </SELECT>
-    </LABEL>
-    <LABEL>你使用的哪种劈砍?
-        <SELECT id="slash" onchange="adjustWeights();">
-            <option value="-1">- 请选择 -</option>
-            <option value="pet">宠物伤害</option>
-            <option value="clan">部落大船伤害</option>
-            <option value="sc">影分身伤害</option>
-        </SELECT>
-    </LABEL>
-    <LABEL>你带的什么宠物?
-        <SELECT id="pet" onchange="adjustWeights();">
-            <OPTION value="-1">- 请选择 -</OPTION>
-            <option value="all">所有攻击力</option>
-            <option value="hero">所有英雄伤害</option>
-            <option value="melee">近战英雄伤害</option>
-            <option value="ranged">远程英雄伤害</option>
-            <option value="spell">法术英雄伤害</option>
-            <option value="tap">点击伤害</option>
-            <option value="gold">所有黄金</option>
-            <option value="mana">法力回复</option>
-            <option value="splash">溅射伤害</option>
         </SELECT>
     </LABEL>
     <label>你主要是在线还是离线?
