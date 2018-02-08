@@ -51,14 +51,6 @@
             <option value="flying">飞行</option>
         </select>
     </label>
-    <LABEL>你穿的哪种衣服?
-        <SELECT id="chest" onchange="adjustWeights();">
-            <option value="-1">- 请选择 -</option>
-            <option value="all">所有黄金</option>
-            <option value="boss">头目黄金</option>
-            <option value="chest">宝箱兽黄金</option>
-        </SELECT>
-    </LABEL>
     <label>你主要是在线还是离线?
         <select id="active" onchange="adjustWeights();">
             <option value="-1">- 请选择 -</option>
@@ -70,22 +62,40 @@
     <P>填写你当前神器的等级. 如果你想忽略某个神器或者没有拥有这件神器的话,将它等级设置为0即可。</P>
     <p>如果有神器等级为0但是是勾选状态时，当你需要的时候会提醒你开新神器(搏一搏，单车变摩托)</p>
     <button onclick="checkAll();">全选</button>
+    <p>AD Sanity Check: <span id="adsanity">0%</span></p>
+
     <div id="artifacts"></div>
     <H3>你现在可用的圣物</H3>
     <P>请输入你想用来升级神器锁消耗的圣物数量.（后边选项为单位）</P>
-    <input id="relics" type="tel">.
-    <input id="relics_decimal" type="tel">
-    <select id="relic_factor">
-        <option value="_"> </option>
-        <option value="K">K</option>
-        <option value="M">M</option>
-        <option value="B">B</option>
-        <option value="T">T</option>
-    </select>
-    <input type="submit" value="生成结果" onclick="generateUpgrades()" ;="">
+    <p>
+        <input id="relics" type="tel" />
+        <strong> . </strong>
+        <input id="relics_decimal" type="tel" />
+        <select id="relic_factor">
+            <option value="_"> </option>
+            <option value="K">K</option>
+            <option value="M">M</option>
+            <option value="B">B</option>
+            <option value="T">T</option>
+            <option value="e13">e13</option>
+            <option value="e14">e14</option>
+            <option value="e15">e15 / aa</option>
+            <option value="e16">e16</option>
+            <option value="e17">e17</option>
+            <option value="e18">e18 / ab</option>
+        </select>
+        <input type="submit" value="生成结果" onclick="generateUpgrades()" ;>
+    </p>
     <br> 优先升
-    <input id="forcebos" type="tel" value="0"> 级
+    <input id="forcebos" type="tel" value="0" /> <select id="bos_type"><option value="level">级</option><option value="pct">% 的圣物</option></select>
     <font style="color:red;">暗影之书</font>
+    <p>
+        <label>
+            <input type="checkbox" id="ocd" onchange="ocdOCD();"> 开启四舍五入模式(提示：与强制升级红书模式冲突)</label>
+    </p>
+    <P>如果你发现此版本与最新版不一样，
+        <a href="new.html" target="_blank">可点击此处使用最新版本计算</a>
+    </P>
     <H3>升级建议</H3>
     <P>如果你升级了全部, 点击完成按钮来更新神器状态表并清除结果</P>
     <p id="new_artifact">&nbsp;</p>
@@ -104,6 +114,7 @@
     <script src="https://tt2-artifacts.herokuapp.com/js/jquery-3.2.1.slim.min.js"></script>
     <script src="https://tt2-artifacts.herokuapp.com/js/popper.min.js"></script>
     <script src="https://tt2-artifacts.herokuapp.com/js/bootstrap.min.js"></script>
+    <script src="https://tt2-artifacts.herokuapp.com/js/decimal.min.js"></script>
     <script src="https://tt2-artifacts.herokuapp.com/js/data.js"></script>
     <script src="https://tt2-artifacts.herokuapp.com/js/weights.js"></script>
     <script src="https://tt2-artifacts.herokuapp.com/js/app.js"></script>

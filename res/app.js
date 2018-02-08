@@ -1,6 +1,6 @@
-winner_e = '';
-winner_n = '';
-winner_value = 0;
+var winner_e = '';
+var winner_n = '';
+var winner_value = 0;
 
 function toggleDark() {
 	$('body').removeClass('dark');
@@ -12,9 +12,17 @@ function toggleDark() {
 	}
 }
 
+function ocdOCD() {
+	if($('#ocd').prop('checked') == true) {
+		window.localStorage.setItem('ocd', 1);
+	} else {
+		window.localStorage.setItem('ocd', 0);
+	}
+}
+
 function generateArtifacts() {
 	$('#artifacts').empty();
-	$.each(artifacts, function(k,v) {
+	$.each(artifacts.data, function(k,v) {
 		if(isNaN(v.level)) {
 			v.level = 0;
         }
@@ -24,22 +32,10 @@ function generateArtifacts() {
         } else {
             console.log(k)
         }
-		div = '<div class="artifact' + (v.active == 1 ? '' : ' ignore') + '" id="'+ k + 'div"><input type="checkbox" id="' + k + 'active"' + (v.active == 1 ? ' checked="checked"' : '') + ' onchange="updateActive(\'' + k + '\');" /><label><input id="' + k + '" value="' + v.level + '" type="tel" onchange="updateArtifacts()" />' + v.name + '</label><br /><span id="' + k + 'effect">';
-		if('' != v.current_effect) {
-			div += displayEffect(v.current_effect, v.type) + v.bonus;
-		}
+		var div = '<div class="artifact' + (v.active == 1 ? '' : ' ignore') + '" id="'+ k + 'div"><input type="checkbox" id="' + k + 'active"' + (v.active == 1 ? ' checked="checked"' : '') + ' onchange="updateActive(\'' + k + '\');" tabindex="-1" /><label><input id="' + k + '" value="' + v.level + '" type="tel" onchange="updateArtifact(\'' + k + '\')" />' + v.name + '</label><br /><span id="' + k + 'effect">';
 		div += '</span><span id="' + k + 'ad">';
-		if('' != v.current_ad) {
-			div += displayPct(v.current_ad) + ' 神器伤害';
-		}
 		div += '</span><span id="' + k + 'cost">';
-		if('' != v.displayCost) {
-			div += v.displayCost + ' 圣物升级';
-		}
 		div += '</span></span><span id="' + k + 'weff">';
-		if('' != v.efficiency) {
-			div += v.rating + ' Weight &#x2022; ' + v.efficiency.toExponential(8) + ' Efficiency';
-		}
 		div += '</span></div>'
 		$('#artifacts').append(div);
 	});
@@ -51,36 +47,42 @@ function generateArtifacts() {
 	window.localStorage.setItem('active', $('#active').val());
 	window.localStorage.setItem('relic_factor', $('#relic_factor').val());
 	window.localStorage.setItem('forcebos', $('#forcebos').val());
+	window.localStorage.setItem('bos_type', $('#bos_type').val());
+	if($('#ocd').prop('checked') == true) {
+		window.localStorage.setItem('ocd', 1);
+	} else {
+		window.localStorage.setItem('ocd', 0);
+	}
 	adjustWeights();
 }
 
 function updateActive(k) {
 	if($('#' + k + 'active').is(':checked')) {
-		artifacts[k].active = 1;
+		artifacts.data[k].active = 1;
 		$('#' + k + 'div').removeClass('ignore');
 	} else {
-		artifacts[k].active = 0;
+		artifacts.data[k].active = 0;
 		$('#' + k + 'div').addClass('ignore');
 	}
-	calculate(artifacts, true);
+	artifacts = calculate(artifacts, k, true, true);
 }
 
 function checkAll() {
-	$.each(artifacts, function(k,v) {
+	$.each(artifacts.data, function(k,v) {
 		$('#' + k + 'active').prop('checked', true);
-		artifacts[k].active = 1;
+		artifacts.data[k].active = 1;
 		$('#' + k + 'div').removeClass('ignore');
 	});
-	calculate(artifacts, true);
+	artifacts = calculateAll(artifacts, true);
 }
 
 function regenerateArtifacts() {
-	$.each(artifacts, function(k,v) {
+	$.each(artifacts.data, function(k,v) {
 		if(isNaN(v.level)) {
 			v.level = 0;
 		}
 		$('#' + k).val(v.level);
-		value = '';
+		var value = '';
 		if('' != v.current_effect) {
 			value = displayEffect(v.current_effect, v.type) + v.bonus;
 		}
@@ -96,8 +98,8 @@ function regenerateArtifacts() {
 		}
 		$('#' + k + 'cost').empty().append(value);
 		value = '';
-		if('' != v.efficiency) {
-			value = v.rating + ' Weight &#x2022; ' + v.efficiency.toExponential(8) + ' Efficiency';
+		if(-1 != v.efficiency) {
+			value = v.rating.toFixed(2).replace(/\.?0+$/, '') + ' 指数 &#x2022; ' + v.efficiency.toExponential(8) + ' 效率';
 		}
 		$('#' + k + 'weff').empty().append(value);
 	});
@@ -109,13 +111,18 @@ function regenerateArtifacts() {
 	window.localStorage.setItem('active', $('#active').val());
 	window.localStorage.setItem('relic_factor', $('#relic_factor').val());
 	window.localStorage.setItem('forcebos', $('#forcebos').val());
+	window.localStorage.setItem('bos_type', $('#bos_type').val());
+	if($('#ocd').prop('checked') == true) {
+		window.localStorage.setItem('ocd', 1);
+	} else {
+		window.localStorage.setItem('ocd', 0);
+	}
 }
 
-function updateArtifacts() {
-	$('.artifact input[type="tel"]').each(function(k,v) {
-		artifacts[v.id].level = parseInt(v.value);
-	});
-	calculate(artifacts, true);
+function updateArtifact(k) {
+	artifacts.data[k].level = parseInt($('#' + k).val());
+	artifacts.totalAD = calculateTotalAD(artifacts.data, true);
+	artifacts = calculate(artifacts, k, true, true);
 }
 
 function countArtifacts(data) {
@@ -144,76 +151,145 @@ function determineAverage(data) {
 }
 
 function generateUpgrades() {
-	console.log(winner_e);
-	console.log(winner_n);
 	$('#new_artifact').empty();
 	window.localStorage.setItem('relic_factor', $('#relic_factor').val())
 	window.localStorage.setItem('forcebos', $('#forcebos').val());
+	window.localStorage.setItem('bos_type', $('#bos_type').val());
+	if($('#ocd').prop('checked') == true) {
+		window.localStorage.setItem('ocd', 1);
+	} else {
+		window.localStorage.setItem('ocd', 0);
+	}
 	if(winner_n != '') {
 		$('#new_artifact').empty().append('<em>提醒: 您最好攒钱开个新神器.</em>');
 	}
-	forceBOS = parseInt($('#forcebos').val());
-	relics = parseFloat($('#relics').val() + '.' + $('#relics_decimal').val());
+	var forceBOS = parseInt($('#forcebos').val());
+	var relics = new Decimal(('' == $('#relics').val() ? 0 : $('#relics').val()) + '.' + ('' == $('#relics_decimal').val() ? 0 : $('#relics_decimal').val()));
 	switch($('#relic_factor').val()) {
 		case '_':
+			relics = relics.toNumber();
 			break;
 
 		case 'K':
-			relics *= 1000;
+			relics = relics.mul(1000).toNumber();
 			break;
 
 		case 'M':
-			relics *= 1000000;
+			relics = relics.mul(1000000).toNumber();
 			break;
 
 		case 'B':
-			relics *= 1000000000;
+			relics = relics.mul(1000000000).toNumber();
 			break;
 
 		case 'T':
-			relics *= 1000000000000;
+			relics = relics.mul(1000000000000).toNumber();
+			break;
+		case 'e13':
+			relics = relics.mul(10000000000000).toNumber();
+			break;
+		case 'e14':
+			relics = relics.mul(100000000000000).toNumber();
+			break;
+		case 'e15':
+			relics = relics.mul(1000000000000000).toNumber();
+			break;
+		case 'e16':
+			relics = relics.mul(10000000000000000).toNumber();
+			break;
+		case 'e17':
+			relics = relics.mul(100000000000000000).toNumber();
+			break;
+		case 'e18':
+			relics = relics.mul(1000000000000000000).toNumber();
 			break;
 	}
 	upgrades = {};
-	temp_artifacts = $.extend(true, {}, artifacts);
-	litmus = false;
-	$.each(artifacts, function(k,v) {
+	var temp_artifacts = $.extend(true, {}, artifacts);
+	var litmus = false;
+	$.each(temp_artifacts.data, function(k,v) {
 		if(v.level > 0) { litmus = true; }
 	});
 	if(false == litmus) {
 		$('#suggestions').empty().append('<li>您最少要拥有一件神器才能使用此计算器.</li>');
 		return
 	}
-	while(forceBOS > 0) {
-		if(relics >= temp_artifacts['bos'].cost) {
-			forceBOS--;
-			if(undefined == upgrades['bos']) {
-				upgrades['bos'] = 1;
+	while(forceBOS > 0 && $('#ocd').prop('checked') == false) {
+		if($('#bos_type').val() == 'level') {
+			if(relics >= temp_artifacts.data['bos'].cost) {
+				forceBOS--;
+				if(undefined == upgrades['bos']) {
+					upgrades['bos'] = 1;
+				} else {
+					upgrades['bos']++;
+				}
+				relics -= temp_artifacts.data['bos'].cost;
+				temp_artifacts.data['bos'].level++;
+				temp_artifacts = calculate(temp_artifacts, 'bos', false, false);
 			} else {
-				upgrades['bos']++;
+				forceBOS = 0;
 			}
-			relics -= temp_artifacts['bos'].cost;
-			temp_artifacts['bos'].level++;
-			calculate(temp_artifacts, false);
 		} else {
-			forceBOS = 0;
+			var bos_pct = forceBOS/100;
+			var bos_relics = relics * bos_pct;
+			while(true) {
+				if(bos_relics >= temp_artifacts.data['bos'].cost) {
+					bos_relics -= temp_artifacts.data['bos'].cost;
+					if(undefined == upgrades['bos']) {
+						upgrades['bos'] = 1;
+					} else {
+						upgrades['bos']++;
+					}
+					relics -= temp_artifacts.data['bos'].cost;
+					temp_artifacts.data['bos'].level++;
+					temp_artifacts = calculate(temp_artifacts, 'bos', false, false);
+				} else if(relics >= temp_artifacts.data['bos'].cost) {
+					if(undefined == upgrades['bos']) {
+						upgrades['bos'] = 1;
+					} else {
+						upgrades['bos']++;
+					}
+					relics -= temp_artifacts.data['bos'].cost;
+					temp_artifacts.data['bos'].level++;
+					temp_artifacts = calculate(temp_artifacts, 'bos', false, false);
+					break;
+				} else {
+					break;
+				}
+			}
+			break;
 		}
 	}
 	while(true) {
-		if(relics >= temp_artifacts[winner_e].cost) {
+		if(relics >= temp_artifacts.data[winner_e].cost) {
 			if(undefined == upgrades[winner_e]) {
 				upgrades[winner_e] = 1;
 			} else {
 				upgrades[winner_e]++;
 			}
-			relics -= temp_artifacts[winner_e].cost;
-			temp_artifacts[winner_e].level++;
-			calculate(temp_artifacts, false);
+			relics -= temp_artifacts.data[winner_e].cost;
+			temp_artifacts.data[winner_e].level++;
+			temp_artifacts = calculate(temp_artifacts, winner_e, false, false);
 		} else {
 			break;
 		}
 	}
-	litmus = false;
+	if($('#ocd').prop('checked')) {
+		$.each(artifacts.data, function(k,v) {
+			if(k in upgrades) {
+				var x = Math.floor(temp_artifacts.data[k].level/100) * 100;
+				if(x > artifacts.data[k].level) {
+					temp_artifacts.data[k].level = x;
+					temp_artifacts = calculate(temp_artifacts, k, false, false);
+					upgrades[k] = x - artifacts.data[k].level;
+				} else if(-1 == artifacts.data[k].max) {
+					delete upgrades[k];
+				}
+			}
+		});
+	}
+	var suggestions = '';
+	var litmus = false;
 	$.each(upgrades, function(k,v) {
 		litmus = true;
 	});
@@ -221,10 +297,9 @@ function generateUpgrades() {
 		$('#suggestions').empty().append('<li>你的圣物不足以生成下一个升级方案. 当你拥有更多的圣物时再尝试.</li>');
 		return
 	}
-	suggestions = '';
-	$.each(artifacts, function(k,v) {
+	$.each(artifacts.data, function(k,v) {
 		if(k in upgrades) {
-			suggestions += '<li>' + v.name + '&#x00A0;' + v.level + '&#x00A0;=>&#x00A0;' + temp_artifacts[k].level + '&#x00A0;(+' + upgrades[k] + ') <span class="light">[' + displayEffect(artifacts[k].current_effect, artifacts[k].type) + '&#x00A0;=>&#x00A0;' + displayEffect(temp_artifacts[k].current_effect, artifacts[k].type) + '&#x00A0;effect&#x00A0;|&#x00A0;' + displayPct(artifacts[k].current_ad) + '&#x00A0;=>&#x00A0;' + displayPct(temp_artifacts[k].current_ad) + '&#x00A0;AD]</span></li>';
+			suggestions += '<li>' + v.name + '&#x00A0;' + v.level + '&#x00A0;=>&#x00A0;' + temp_artifacts.data[k].level + '&#x00A0;(+' + upgrades[k] + ') <span class="light">[' + displayEffect(artifacts.data[k].current_effect, artifacts.data[k].type) + '&#x00A0;=>&#x00A0;' + displayEffect(temp_artifacts.data[k].current_effect, artifacts.data[k].type) + '&#x00A0;effect&#x00A0;|&#x00A0;' + displayPct(artifacts.data[k].current_ad) + '&#x00A0;=>&#x00A0;' + displayPct(temp_artifacts.data[k].current_ad) + '&#x00A0;AD]</span></li>';
 		}
 	});
 	$('#suggestions').empty().append(suggestions);
@@ -238,84 +313,141 @@ function acceptSuggestions() {
 		'event_label': 'List',
 	});
 	$.each(upgrades, function(k,v) {
-		artifacts[k].level += v;
+		artifacts.data[k].level += v;
 	});
+	artifacts.totalAD = calculateTotalAD(artifacts.data, true);
 	$('#new_artifact').empty();
 	$('#accept').empty();
 	$('#suggestions').empty();
 	$('#relics').val('');
 	$('#relics_decimal').val('');
-	calculate(artifacts, true);
+	artifacts = calculateAll(artifacts, true);
 }
 
-function calculate(data, regenerate) {
-	winner_e = ''
-	winner_n = ''
-	winner_value = 0;
-	next_artifact = countArtifacts(artifacts) + 1;
-	next_artifact_cost = artifact_costs[next_artifact];
-	average_level = determineAverage(artifacts);
-//	totalAD = 0;
-//	$.each(data, function(k,v) {
-//		totalAD += v.level * v.ad;
-//	});
+function oldEff(data, k, v) {
+	var current_ad = v.level * v.ad;
+	var current_effect = 1 + v.effect * Math.pow(v.level, Math.pow((1 + (v.cexpo - 1) * Math.min(v.grate * v.level, v.gmax)), v.gexpo));
+	data.data[k].current_ad = current_ad;
+	data.data[k].current_effect = current_effect
+	if(v.max == -1 || v.max > v.level) {
+		var cost = Math.pow(v.level + 1, v.cexpo) * v.ccoef;
+		data.data[k].cost= cost;
+		data.data[k].displayCost = displayTruncated(cost);
+		var next_effect = 1 + v.effect * Math.pow(v.level + 1, Math.pow((1 + (v.cexpo - 1) * Math.min(v.grate * (v.level + 1), v.gmax)), v.gexpo));
+		var effect_diff = next_effect/current_effect;
+		var effect_eff = Math.pow(effect_diff, v.rating);
+		var ad_change = (((v.level + 1) * v.ad) - current_ad);
+		var ad_eff = 1 + (ad_change/data.totalAD);
+		var eff = Math.abs(((effect_eff * ad_eff) - 1)/cost);
+		data.data[k].efficiency = eff;
+	}
+	return(data);
+}
+
+function newEff(data, k, v, avglvl, cost) {
+	data.data[k].current_ad = '';
+	data.data[k].current_effect = '';
+	var i = 1;
+	var j = (v.max == -1 || v.max > avglvl ? avglvl : v.max);
+	while(i <= j) {
+		cost += Math.pow(i++, v.cexpo) * v.ccoef;
+	}
+	if(v.max == -1 || v.max > avglvl) {
+		var next_effect = 1 + v.effect * Math.pow(avglvl, Math.pow((1 + (v.cexpo - 1) * Math.min(v.grate * avglvl, v.gmax)), v.gexpo));
+	} else  {
+		var next_effect = 1 + v.effect * Math.pow(v.max, Math.pow((1 + (v.cexpo - 1) * Math.min(v.grate * v.max, v.gmax)), v.gexpo));
+	}
+	var effect_eff = Math.pow(next_effect, v.rating);
+	var ad_eff = 1 + ((avglvl * v.ad)/data.totalAD);
+	var eff = Math.abs(((effect_eff * ad_eff) - 1)/cost);
+	data.data[k].efficiency = eff;
+	return(data)
+}
+
+function calculateTotalAD(data, update) {
+	var total = 0;
 	$.each(data, function(k,v) {
-		data[k].efficiency = '';
-		data[k].cost = '';
-		data[k].displayCost = '';
-		if(v.level > 0 && v.active == 1) {
-			current_ad = v.level * v.ad
-			current_effect = 1 + v.effect * Math.pow(v.level, Math.pow((1 + (v.cexpo - 1) * Math.min(v.grate * v.level, v.gmax)), v.gexpo));
-			data[k].current_ad = current_ad;
-			data[k].current_effect = current_effect
-			if(v.max == -1 || v.max > v.level) {
-				cost = Math.pow(v.level + 1, v.cexpo) * v.ccoef;
-				data[k].cost= cost;
-				data[k].displayCost = displayTruncated(cost);
-				next_effect = 1 + v.effect * Math.pow(v.level + 1, Math.pow((1 + (v.cexpo - 1) * Math.min(v.grate * (v.level + 1), v.gmax)), v.gexpo));
-				next_ad_jump = ((v.level + 1) * v.ad) - (v.level * v.ad);
-				effect_eff = ((next_effect - current_effect) ^ v.rating)/cost;
-				ad_eff = next_ad_jump/cost;
-				eff = effect_eff + ad_eff;
-				data[k].efficiency = eff;
-				if(eff > winner_value) {
-					winner_e = k;
-					winner_n = '';
-					winner_value = eff;
-				}
+		total += v.level * v.ad;
+	});
+	if(true == update) {
+		$('#adsanity').text(displayPct(total * artifacts.data.hsw.current_effect));
+	}
+	return(total);
+}
+
+function calculate(data, k, regenerate, pinch) {
+	var next_artifact = countArtifacts(artifacts.data) + 1;
+	var next_artifact_cost = artifact_costs[next_artifact];
+	var average_level = determineAverage(artifacts.data);
+	var v = data.data[k];
+	data.data[k].efficiency = -1;
+	data.data[k].cost = '';
+	data.data[k].displayCost = '';
+	if(v.level > 0 && v.active == 1) {
+		var prior_ad = v.current_ad;
+		data = oldEff(data, k, v);
+		var new_ad = data.data[k].current_ad;
+	} else if(v.level == 0 && next_artifact_cost != -1 && v.active == 1 && true === pinch) {
+		data = newEff(data, k, v, average_level, next_artifact_cost);
+	} else {
+		data.data[k].current_ad = '';
+		data.data[k].current_effect = '';
+	}
+	winner_e = ''
+	var temp_winner_n = ''
+	winner_value = 0;
+	$.each(data.data, function(k,v) {
+		if(-1 != v.efficiency && v.efficiency > winner_value) {
+			if(v.level > 0 && v.active == 1) {
+				winner_e = k;
+				winner_value = v.efficiency;
+			} else if(v.level == 0 && next_artifact_cost != -1 && v.active == 1 && true === pinch) {
+				temp_winner_n = k;
 			}
-		} else if(v.level == 0 && next_artifact_cost != -1 && v.active == 1) {
-			data[k].current_ad = '';
-			data[k].current_effect = '';
-//			i = 1;
-//			cost = 0;
-			if(v.max == -1 || v.max > average_level) {
-				next_effect = 1 + v.effect * Math.pow(average_level, Math.pow((1 + (v.cexpo - 1) * Math.min(v.grate * average_level, v.gmax)), v.gexpo));
-//				while(i < average_level) { 
-//					cost += Math.pow(i++ + 1, v.cexpo) * v.ccoef;
-//				}
-			} else  {
-				next_effect = 1 + v.effect * Math.pow(v.max, Math.pow((1 + (v.cexpo - 1) * Math.min(v.grate * v.max, v.gmax)), v.gexpo));
-//				while(i < v.max) { 
-//					cost += Math.pow(i++ + 1, v.cexpo) * v.ccoef;
-//				}
-			}
-			next_ad_jump = average_level * v.ad;
-			effect_eff = (next_effect ^ v.rating)/next_artifact_cost;
-			ad_eff = next_ad_jump/next_artifact_cost;
-			eff = effect_eff + ad_eff;
-			data[k].efficiency = eff;
-			if(eff > winner_value) {
-				winner_n = k;
-			}
-		} else {
-			data[k].current_ad = '';
-			data[k].current_effect = '';
 		}
 	});
 	if(true === regenerate) {
 		regenerateArtifacts();
+		winner_n = temp_winner_n;
 	}
+	data.totalAD = calculateTotalAD(data.data, regenerate);
+	return(data);
+}
+
+function calculateAll(data, regenerate) {
+	winner_e = ''
+	var temp_winner_n = ''
+	winner_value = 0;
+	var next_artifact = countArtifacts(artifacts.data) + 1;
+	var next_artifact_cost = artifact_costs[next_artifact];
+	var average_level = determineAverage(artifacts.data);
+	$.each(data.data, function(k,v) {
+		data.data[k].efficiency = -1;
+		data.data[k].cost = '';
+		data.data[k].displayCost = '';
+		if(v.level > 0 && v.active == 1) {
+			data = oldEff(data, k, v);
+			if(-1 != data.data[k].efficiency && data.data[k].efficiency > winner_value) {
+				winner_e = k;
+				temp_winner_n = '';
+				winner_value = data.data[k].efficiency;
+			}
+		} else if(v.level == 0 && next_artifact_cost != -1 && v.active == 1) {
+			data = newEff(data, k, v, average_level, next_artifact_cost);
+			if(-1 != data.data[k].efficiency && data.data[k].efficiency > winner_value) {
+				temp_winner_n = k;
+			}
+		} else {
+			data.data[k].current_ad = '';
+			data.data[k].current_effect = '';
+		}
+	});
+	if(true === regenerate) {
+		regenerateArtifacts();
+		winner_n = temp_winner_n;
+	}
+	data.totalAD = calculateTotalAD(data.data, regenerate);
+	return(data)
 }
 
 function displayPct(value) {
@@ -324,7 +456,25 @@ function displayPct(value) {
 }
 
 function displayTruncated(value) {
-	if(value > 999999999999) {
+	if(value > 999999999999999999) {
+		value = (value / 1000000000000000000).toFixed(3).replace(/\.?0+$/, '');
+		value += 'e18/ab';
+	} else if(value > 99999999999999999) {
+		value = (value / 100000000000000000).toFixed(3).replace(/\.?0+$/, '');
+		value += 'e17';
+	} else if(value > 9999999999999999) {
+		value = (value / 10000000000000000).toFixed(3).replace(/\.?0+$/, '');
+		value += 'e16';
+	} else if(value > 999999999999999) {
+		value = (value / 1000000000000000).toFixed(3).replace(/\.?0+$/, '');
+		value += 'e15/aa';
+	} else if(value > 99999999999999) {
+		value = (value / 100000000000000).toFixed(3).replace(/\.?0+$/, '');
+		value += 'e14';
+	} else if(value > 9999999999999) {
+		value = (value / 10000000000000).toFixed(3).replace(/\.?0+$/, '');
+		value += 'e13';
+	} else if(value > 999999999999) {
 		value = (value / 1000000000000).toFixed(3).replace(/\.?0+$/, '');
 		value += 'T';
 	} else if(value > 999999999) {
@@ -393,13 +543,19 @@ function storageAvailable(type) {
 }
 
 if (storageAvailable('localStorage')) {
-	localArtifacts = JSON.parse(window.localStorage.getItem('artifacts'));
-	$.each(localArtifacts, function(k, v) {
-		if(undefined != artifacts[k]) {
-			artifacts[k].level = v.level;
-			artifacts[k].active = v.active;
-		}
-	});
+	var localArtifacts = JSON.parse(window.localStorage.getItem('artifacts'));
+	if(null != localArtifacts && 'undefined' == typeof localArtifacts.data) {
+		localArtifacts.data = jQuery.extend(true, {}, localArtifacts);
+	}
+	if(null != localArtifacts && 'undefined' != typeof localArtifacts.data) {
+		$.each(localArtifacts.data, function(k, v) {
+			if(undefined != artifacts.data[k]) {
+				artifacts.data[k].level = v.level;
+				artifacts.data[k].active = v.active;
+			}
+		});
+	}
+	artifacts.totalAD = calculateTotalAD(artifacts.data);
 	$('#build').val(window.localStorage.getItem('build'));
 	$('#hero').val(window.localStorage.getItem('hero'));
 	$('#hero2').val(window.localStorage.getItem('hero2'));
@@ -407,12 +563,15 @@ if (storageAvailable('localStorage')) {
 	$('#active').val(window.localStorage.getItem('active'));
 	$('#relic_factor').val(window.localStorage.getItem('relic_factor'));
 	$('#forcebos').val(window.localStorage.getItem('forcebos'));
+	$('#bos_type').val(window.localStorage.getItem('bos_type'));
 	if(window.localStorage.getItem('dark') == "1") {
 		$('#dark').prop('checked', true);
+	}
+	if(window.localStorage.getItem('ocd') == "1") {
+		$('#ocd').prop('checked', true);
 	}
 	toggleDark();
 }
 
-origWeights = jQuery.extend(true, {}, artifacts);
+var origWeights = jQuery.extend(true, {}, artifacts.data);
 generateArtifacts();
-

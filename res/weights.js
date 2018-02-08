@@ -40,131 +40,151 @@ function adjustWeights() {
 		});
 	}
 	$.each(origWeights, function(k,v) {
-		artifacts[k].rating = v.rating;
+		artifacts.data[k].rating = v.rating;
 	});
 	switch($('#build').val()) {
-		case 'tap':
-			artifacts.dh.rating += 2;
-			artifacts.hb.rating += .5;
-			artifacts.tsos.rating += .5;
-			artifacts.fb.rating += .5;
-			artifacts.cota.rating += .5;
-			artifacts.ttt.rating += .5;
-			artifacts.hh.rating += .25;
-			artifacts.ss.rating += 1;
-			artifacts.tr.rating += 1;
-			break;
 		case 'hero':
-			artifacts.hb.rating += 2;
-			artifacts.tsos.rating += 1;
-			artifacts.fb.rating += 1;
-			artifacts.cota.rating += 1;
-			artifacts.ttt.rating += 1;
-			artifacts.hh.rating += .5;
-			artifacts.pof.rating += 2;
 			break;
-		case 'cs':
-			artifacts.hb.rating += 1;
-			artifacts.tsos.rating += 1;
-			artifacts.fb.rating += 1;
-			artifacts.cota.rating += 1;
-			artifacts.coe.rating += .5;
-			artifacts.ttt.rating += 1;
-			artifacts.hh.rating += .5;
-			artifacts.ie.rating += 2;
-			artifacts.orc.rating += 2;
-			artifacts.hos.rating += 1;
-			artifacts.ig.rating += 1.5;
-			artifacts.rt.rating += .5;
-			artifacts.pof.rating += 2;
-			artifacts.tr.rating += 1;
-			break;
-		case 'hs':
-			artifacts.dh.rating += 1;
-			artifacts.coe.rating += 1;
-			artifacts.ss.rating += .6;
-			artifacts.hb.rating += .5;
-			artifacts.tsos.rating += .5;
-			artifacts.fb.rating += .5;
-			artifacts.cota.rating += .5;
-			artifacts.ttt.rating += .5;
-			artifacts.hh.rating += .25;
-			artifacts.hos.rating += 1;
-			artifacts.ig.rating += 3;
-			artifacts.tm.rating += 2;
-			artifacts.rt.rating += .5;
-			artifacts.bor.rating += 1;
-			artifacts.pof.rating += .5;
-			artifacts.tr.rating += 1;
-			break;
-		case 'sc':
-			artifacts.dh.rating += .6;
-			artifacts.ss.rating += .6;
-			artifacts.hb.rating += .6;
-			artifacts.tsos.rating += .6;
-			artifacts.fb.rating += .6;
-			artifacts.cota.rating += .6;
-			artifacts.ttt.rating += .6;
-			artifacts.hh.rating += .3;
-			artifacts.orc.rating += 2;
-			artifacts.ig.rating += 2.6;
-			artifacts.rt.rating += .5;
-			artifacts.bor.rating += .5;
-			artifacts.pof.rating += .6;
-			artifacts.eoe.rating += 2;
-			artifacts.tr.rating += 1;
+			artifacts.data.hb.rating += 1;
+			artifacts.data.tsos.rating += .8;
+			artifacts.data.fb.rating += .8;
+			artifacts.data.cota.rating += .8;
+			artifacts.data.ttt.rating += .8;
+			artifacts.data.hh.rating += .5;
+			artifacts.data.hos2.rating += 6;
+			artifacts.data.ig.rating += 1.75;
+			artifacts.data.pof.rating += 1;
+			artifacts.data.hom.rating += 1;
+			artifacts.data.roc.rating += 2.75;
+		case 'tap':
+			artifacts.data.dh.rating += 1;
+			artifacts.data.ss.rating += 1;
+			artifacts.data.tr.rating += 1;
+			artifacts.data.hb.rating += .5;
+			artifacts.data.tsos.rating += .33;
+			artifacts.data.fb.rating += .33;
+			artifacts.data.cota.rating += .33;
+			artifacts.data.ttt.rating += .33;
+			artifacts.data.hh.rating += 0;
+			artifacts.data.hos2.rating += 6;
+			artifacts.data.ig.rating += 3.25;
+			artifacts.data.rt.rating += 1;
+			artifacts.data.bor.rating += 1;
+			artifacts.data.pof.rating += .5;
+			artifacts.data.hom.rating += 1;
+			artifacts.data.roc.rating += 2.75;
 			break;
 		case 'pet':
-			artifacts.foe.rating += 2;
-			artifacts.dh.rating += 1;
-			artifacts.tr.rating += 1;
-			artifacts.coe.rating += 1;
-			artifacts.hos.rating += 1;
-			artifacts.hb.rating += .5;
-			artifacts.tsos.rating += .5;
-			artifacts.fb.rating += .5;
-			artifacts.cota.rating += .5;
-			artifacts.ttt.rating += .5;
-			artifacts.hh.rating += .25;
-			artifacts.orc.rating += 2;
-			artifacts.ig.rating += 1.5;
-			artifacts.rt.rating += .5;
-			artifacts.pof.rating += 1;
-			artifacts.tr.rating += 1;
+			artifacts.data.coe.rating += .25;
+			artifacts.data.dh.rating += 1;
+			artifacts.data.tr.rating += 1;
+			artifacts.data.hb.rating += .5;
+			artifacts.data.tsos.rating += .33;
+			artifacts.data.fb.rating += .33;
+			artifacts.data.cota.rating += .33;
+			artifacts.data.ttt.rating += .2;
+			artifacts.data.hh.rating += 0;
+			artifacts.data.foe.rating += .5;
+			artifacts.data.orc.rating += 1;
+			artifacts.data.hos2.rating += 6;
+			artifacts.data.hos.rating += .5;
+			artifacts.data.ig.rating += 2.25;
+			artifacts.data.rt.rating += .5;
+			artifacts.data.as.rating += 1;
+			artifacts.data.hom.rating += .5;
+			artifacts.data.roc.rating += 3.25;
+			break;
+		case 'sc':
+			artifacts.data.dh.rating += .67;
+			artifacts.data.ss.rating += .67;
+			artifacts.data.tr.rating += 1;
+			artifacts.data.hb.rating += .67;
+			artifacts.data.tsos.rating += .47;
+			artifacts.data.fb.rating += .47;
+			artifacts.data.cota.rating += .47;
+			artifacts.data.ttt.rating += .47;
+			artifacts.data.hh.rating += .1;
+			artifacts.data.orc.rating += 1;
+			artifacts.data.hos2.rating += 6;
+			artifacts.data.ig.rating += 3.42;
+			artifacts.data.rt.rating += .5;
+			artifacts.data.bor.rating += .5;
+			artifacts.data.pof.rating += .67;
+			artifacts.data.eoe.rating += 1;
+			artifacts.data.as.rating += 1;
+			artifacts.data.hom.rating += .67;
+			artifacts.data.roc.rating += 3.42;
+			break;
+		case 'hs':
+			artifacts.data.coe.rating += .25;
+			artifacts.data.dh.rating += 1;
+			artifacts.data.ss.rating += .6;
+			artifacts.data.tr.rating += 1;
+			artifacts.data.hb.rating += .5;
+			artifacts.data.tsos.rating += .33;
+			artifacts.data.fb.rating += .33;
+			artifacts.data.cota.rating += .33;
+			artifacts.data.ttt.rating += .33;
+			artifacts.data.hh.rating += 0;
+			artifacts.data.hos2.rating += 7;
+			artifacts.data.hos.rating += .5;
+			artifacts.data.ig.rating += 3.92;
+			artifacts.data.tm.rating += 3;
+			artifacts.data.rt.rating += .5;
+			artifacts.data.bor.rating += 1;
+			artifacts.data.pof.rating += .5;
+			artifacts.data.hom.rating += 1;
+			artifacts.data.roc.rating += 2.42;
+			break;
+		case 'cs':
+			artifacts.data.coe.rating += .25;
+			artifacts.data.tr.rating += 1;
+			artifacts.data.hb.rating += 1;
+			artifacts.data.tsos.rating += .8;
+			artifacts.data.fb.rating += .8;
+			artifacts.data.cota.rating += .8;
+			artifacts.data.ttt.rating += .8;
+			artifacts.data.hh.rating += .5;
+			artifacts.data.ie.rating += 1;
+			artifacts.data.orc.rating += 1;
+			artifacts.data.hos2.rating += 7;
+			artifacts.data.hos.rating += .5;
+			artifacts.data.ig.rating += 2.25;
+			artifacts.data.rt.rating += .5;
+			artifacts.data.pof.rating += 1;
+			artifacts.data.as.rating += 1;
+			artifacts.data.hom.rating += 1;
+			artifacts.data.roc.rating += 3.75;
 			break;
 	}
 	switch($('#hero').val()) {
 		case 'melee':
-			artifacts.tsos.rating += 1;
+			artifacts.data.tsos.rating += .2;
 			break;
 		case 'ranged':
-			artifacts.fb.rating += 1;
+			artifacts.data.fb.rating += .2;
 			break;
 		case 'spell':
-			artifacts.cota.rating += 1;
+			artifacts.data.cota.rating += .2;
 			break;
 	}
 	switch($('#hero2').val()) {
 		case 'ground':
-			artifacts.ttt.rating += 1;
+			artifacts.data.ttt.rating += .2;
 			break;
 		case 'flying':
-			artifacts.hh.rating += 1;
-			break;
-	}
-	switch($('#chest').val()) {
-		case 'boss':
-			artifacts.hs.rating += .5;
-			break;
-		case 'chest':
-			artifacts.coc.rating += .5;
+			artifacts.data.hh.rating += .5;
 			break;
 	}
 	switch($('#active').val()) {
 		case 'offline':
-			artifacts.zc.rating += 1;
-			artifacts.af.rating += 1;
+			artifacts.data.zc.rating += 1;
+			artifacts.data.af.rating += 1;
+			break;
+		case 'online':
+			artifacts.data.coc.rating += .25;
+			artifacts.data.gfa.rating += .25;
 			break;
 	}
-	calculate(artifacts, true);
+	artifacts = calculateAll(artifacts, true);
 }
